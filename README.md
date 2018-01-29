@@ -60,4 +60,4 @@ Now just put the Context as dependency and use. The context automatically looks 
 * Add data annotations for Models to describe indexes.
 * Optimize Context to allocate instances only on demand.
 * Add a utils to help in some queries.
-* Add appropriate support for MongoDB Options
+* Add appropriate support for MongoDB Options.
