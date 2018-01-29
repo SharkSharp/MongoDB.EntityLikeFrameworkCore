@@ -68,3 +68,10 @@ Finally, register the context in dependency injection:
 
 All set up.
 Now just put the Context as dependency and use. The context automatically looks at the Collections added by the developer and automatically adds a reference to them.
+
+## Next desired features:
+
+* Add data annotations for Models to describe indexes.
+* Optimize Context to allocate instances only on demand.
+* Add a utils to help in some queries.
+* Add appropriate support for MongoDB Options
