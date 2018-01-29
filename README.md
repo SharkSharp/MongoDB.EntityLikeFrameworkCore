@@ -10,13 +10,6 @@ The purpose of the library is not to be an ORM, but to provide an interface betw
 Firstly create your models with the appropriate MongoDb.Driver annotations.
 
 ```cs
-
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using System;
-
-namespace MongoDB.EntityLikeFrameworkCore.Example.Models
-{
     public class User
     {
         [BsonId]
@@ -28,7 +21,6 @@ namespace MongoDB.EntityLikeFrameworkCore.Example.Models
         [BsonDateTimeOptions(DateOnly = true)]
         public DateTime BirthDate { get; set; }
     }
-}
 ```
 
 Then create your context like in EntityFramework.
@@ -36,11 +28,6 @@ Then create your context like in EntityFramework.
 NOTE: We use the IMongoCollection from MongoDB.Driver instead of DbSet<>.
 
 ```cs
-using MongoDB.Driver;
-using MongoDB.EntityLikeFrameworkCore.Annotation;
-
-namespace MongoDB.EntityLikeFrameworkCore.Example.Models
-{
     [Database("NewDatabaseName")]
     public class ExampleContext : MongoContext
     {
@@ -50,7 +37,6 @@ namespace MongoDB.EntityLikeFrameworkCore.Example.Models
         [Collection("NewDatabaseCollection")]
         public IMongoCollection<User> Users { get; set; }
     }
-}
 ```
 
 At the beginning of the application Context will connect to the database, calculate the differences between the database and the code, and create the new collections.
