@@ -1,7 +1,9 @@
-﻿using MongoDB.EntityLikeFrameworkCore.Example.Models;
-using MongoDB.Driver;
-using System.Collections.Generic;
+﻿using MongoDB.Driver;
 using MongoDB.EntityLikeFrameworkCore.Example.Core;
+using MongoDB.EntityLikeFrameworkCore.Example.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MongoDB.EntityLikeFrameworkCore.Example.Repositories
 {
@@ -14,44 +16,85 @@ namespace MongoDB.EntityLikeFrameworkCore.Example.Repositories
             this.context = context;
         }
 
-        public IEnumerable<User> GetAll()
+        public async Task<IEnumerable<User>> GetAll()
         {
-            return context.Users
-                   .Find(x => true)
-                   .ToEnumerable();
+            try
+            {
+                var result = await context.Users
+                   .FindAsync(x => true);
+
+                return result.ToEnumerable();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
-        public User FindOne(string id)
+        public async Task<User> FindOne(string id)
         {
-            return context.Users
-                   .Find(x => x.Id == id)
-                   .FirstOrDefault();
+            try
+            {
+                var result = await context.Users
+                   .FindAsync(x => x.Id == id);
+
+                return result.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
-        public User InertUser(User newUser)
+        public async Task<User> InertUser(User newUser)
         {
-            context.Users.InsertOne(newUser);
-            return newUser;
+            try
+            {
+                await context.Users.InsertOneAsync(newUser);
+                return newUser;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
-        public bool DeleteUser(string id)
+        public async Task<bool> DeleteUser(string id)
         {
-           return context.Users.DeleteOne(x => x.Id == id)
-                  .DeletedCount > 0;
+            try
+            {
+                var result = await context.Users.DeleteOneAsync(x => x.Id == id);
+
+                return result.IsAcknowledged &&
+                       result.DeletedCount > 0;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
-        public User UpdateUser(string id, User user)
+        public async Task<User> UpdateUser(string id, User user)
         {
-            return context.Users.FindOneAndUpdate<User>(x => x.Id == id,
-                                                        Builders<User>.Update
-                                                        .Set(x => x.Name, user.Name)
-                                                        .Set(x => x.Email, user.Email)
-                                                        .Set(x => x.BirthDate, user.BirthDate)
-                                                        .Set(x => x.Password, user.Password),
-                                                        new FindOneAndUpdateOptions<User>()
-                                                        {
-                                                            ReturnDocument = ReturnDocument.After
-                                                        });
+            try
+            {
+                var result = await context.Users
+                .FindOneAndUpdateAsync<User>(x => x.Id == id,
+                                            Builders<User>.Update
+                                            .Set(x => x.Name, user.Name)
+                                            .Set(x => x.Email, user.Email)
+                                            .Set(x => x.BirthDate, user.BirthDate)
+                                            .Set(x => x.Password, user.Password),
+                                            new FindOneAndUpdateOptions<User>()
+                                            {
+                                                ReturnDocument = ReturnDocument.After
+                                            });
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

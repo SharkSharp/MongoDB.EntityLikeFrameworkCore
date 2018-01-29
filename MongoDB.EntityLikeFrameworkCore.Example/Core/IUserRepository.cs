@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MongoDB.EntityLikeFrameworkCore.Example.Models;
 
 namespace MongoDB.EntityLikeFrameworkCore.Example.Core
 {
     public interface IUserRepository
     {
-        bool DeleteUser(string id);
-        User FindOne(string id);
-        IEnumerable<User> GetAll();
-        User InertUser(User newUser);
-        User UpdateUser(string id, User user);
+        Task<bool> DeleteUser(string id);
+        Task<User> FindOne(string id);
+        Task<IEnumerable<User>> GetAll();
+        Task<User> InertUser(User newUser);
+        Task<User> UpdateUser(string id, User user);
     }
 }

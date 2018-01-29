@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
 using MongoDB.EntityLikeFrameworkCore.Example.Core;
 using MongoDB.EntityLikeFrameworkCore.Example.Models;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace MongoDB.EntityLikeFrameworkCore.Example.Controllers
 {
@@ -18,15 +17,16 @@ namespace MongoDB.EntityLikeFrameworkCore.Example.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            return Ok(repository.GetAll());
+            var result = await repository.GetAll();
+            return Ok(result);
         }
 
         [HttpGet("{id}", Name ="GetUserById")]
-        public IActionResult Get(string id)
+        public async Task<IActionResult> Get(string id)
         {
-            var user = repository.FindOne(id);
+            var user = await repository.FindOne(id);
 
             if (user == null)
                 return NotFound();
@@ -35,22 +35,22 @@ namespace MongoDB.EntityLikeFrameworkCore.Example.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody]User value)
+        public async Task<IActionResult> Post([FromBody]User value)
         {
             if (value == null)
                 return BadRequest();
 
-            repository.InertUser(value);
+            await repository.InertUser(value);
             return CreatedAtRoute("GetUserById", new { id = value.Id }, value);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(string id, [FromBody]User value)
+        public async Task<IActionResult> Put(string id, [FromBody]User value)
         {
             if (value == null)
                 return BadRequest();
 
-            var result = repository.UpdateUser(id, value);
+            var result = await repository.UpdateUser(id, value);
             if (result == null)
                 return BadRequest();
 
@@ -58,26 +58,26 @@ namespace MongoDB.EntityLikeFrameworkCore.Example.Controllers
         }
 
         [HttpPatch("{id}")]
-        public IActionResult Put(string id, [FromBody]JsonPatchDocument<User> patcher)
+        public async Task<IActionResult> Put(string id, [FromBody]JsonPatchDocument<User> patcher)
         {
             if (patcher == null)
                 return BadRequest();
 
-            var target = repository.FindOne(id);
+            var target = await repository.FindOne(id);
             if (target == null)
                 return NotFound();
 
             patcher.ApplyTo(target);
 
-            repository.UpdateUser(id, target);
+            await repository.UpdateUser(id, target);
 
             return Ok(target);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(string id)
+        public async Task<IActionResult> Delete(string id)
         {
-            repository.DeleteUser(id);
+            await repository.DeleteUser(id);
             return NoContent();
         }
     }
