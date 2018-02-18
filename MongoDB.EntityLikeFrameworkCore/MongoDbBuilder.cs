@@ -16,7 +16,7 @@ namespace MongoDB.EntityLikeFrameworkCore
         /// <summary>
         /// 
         /// </summary>
-        public MongoDbBuilder(bool handleNewCollections)
+        public MongoDbBuilder(bool handleNewCollections = true)
         {
             this.handleNewCollections = handleNewCollections;
         }
