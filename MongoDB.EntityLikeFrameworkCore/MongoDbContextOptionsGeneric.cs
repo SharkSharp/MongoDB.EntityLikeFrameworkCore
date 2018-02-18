@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 
 namespace MongoDB.EntityLikeFrameworkCore
 {
@@ -12,6 +9,6 @@ namespace MongoDB.EntityLikeFrameworkCore
     public class MongoDbContextOptions<T> : MongoDbContextOptions where T : MongoContext
     {
         public MongoDbContextOptions(string connectionString, MongoDatabaseSettings settings = null)
-            : base(typeof(T), connectionString, settings) { }
+            : base(connectionString, settings) { }
     }
 }

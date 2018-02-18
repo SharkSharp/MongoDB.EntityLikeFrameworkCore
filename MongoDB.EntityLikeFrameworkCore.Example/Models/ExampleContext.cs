@@ -10,6 +10,6 @@ namespace MongoDB.EntityLikeFrameworkCore.Example.Models
             : base(options) { }
 
         [Collection("user")]
-        public IMongoCollection<User> Users { get; set; }
+        public IMongoCollection<User> Users { get => GetCollection<User>(); }
     }
 }
