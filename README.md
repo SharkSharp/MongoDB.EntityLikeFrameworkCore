@@ -35,7 +35,7 @@ NOTE: We use the IMongoCollection from MongoDB.Driver instead of DbSet<>.
             : base(options) { }
 
         [Collection("NewDatabaseCollection")]
-        public IMongoCollection<User> Users { get; set; }
+        public IMongoCollection<User> Users { get => GetCollection<User>(); }
     }
 ```
 
