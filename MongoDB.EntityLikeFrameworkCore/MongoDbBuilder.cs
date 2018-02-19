@@ -54,8 +54,6 @@ namespace MongoDB.EntityLikeFrameworkCore
         {
             foreach (var collection in absentCollections)
             {
-                context.Database.CreateCollection(GetCodeCollectionName(collection));
-
                 GetType()
                 .GetRuntimeMethods()
                 .Where(x => x.Name == "Seed")
@@ -106,13 +104,13 @@ namespace MongoDB.EntityLikeFrameworkCore
         private string GetCodeCollectionName(PropertyInfo propInfo)
         {
             CollectionAttribute attribute;
-            if ((attribute = propInfo.GetCustomAttribute(typeof(CollectionAttribute)) as CollectionAttribute) != null)
+            if ((attribute = propInfo.GetGetMethod().ReturnType.GetCustomAttribute(typeof(CollectionAttribute)) as CollectionAttribute) != null)
             {
                 return attribute.Name;
             }
             else
             {
-                return propInfo.Name;
+                return propInfo.GetGetMethod().ReturnType.Name;
             }
 
         }

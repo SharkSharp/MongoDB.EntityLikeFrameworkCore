@@ -7,7 +7,7 @@ namespace MongoDB.EntityLikeFrameworkCore.Annotation
     /// <summary>
     /// 
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class CollectionAttribute : Attribute
     {
         /// <summary>
