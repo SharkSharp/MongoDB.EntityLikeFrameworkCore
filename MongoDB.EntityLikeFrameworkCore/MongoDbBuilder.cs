@@ -31,8 +31,21 @@ namespace MongoDB.EntityLikeFrameworkCore
         /// <summary>
         /// 
         /// </summary>
+        /// <typeparam name="ModelType"></typeparam>
+        /// <param name="collection"></param>
+        protected virtual void Index<ModelType>(IMongoCollection<ModelType> collection) { }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="context"></param>
         protected virtual void Seed(T context) { }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        protected virtual void Index(T context) { }
 
         /// <summary>
         /// 
@@ -42,6 +55,8 @@ namespace MongoDB.EntityLikeFrameworkCore
         {
             if(handleNewCollections)
                 HandleNewCollections(context, GetAbsentCollectionNames(context));
+
+            Index(context);
             Seed(context);
         }
 
@@ -54,6 +69,13 @@ namespace MongoDB.EntityLikeFrameworkCore
         {
             foreach (var collection in absentCollections)
             {
+                GetType()
+                .GetRuntimeMethods()
+                .Where(x => x.Name == "Index")
+                .First()
+                .MakeGenericMethod(collection.PropertyType.GetGenericArguments().First())
+                .Invoke(this, new object[] { collection.GetValue(context) });
+
                 GetType()
                 .GetRuntimeMethods()
                 .Where(x => x.Name == "Seed")
@@ -104,13 +126,13 @@ namespace MongoDB.EntityLikeFrameworkCore
         private string GetCodeCollectionName(PropertyInfo propInfo)
         {
             CollectionAttribute attribute;
-            if ((attribute = propInfo.GetGetMethod().ReturnType.GetCustomAttribute(typeof(CollectionAttribute)) as CollectionAttribute) != null)
+            if ((attribute = propInfo.PropertyType.GetGenericArguments().First().GetCustomAttribute(typeof(CollectionAttribute)) as CollectionAttribute) != null)
             {
                 return attribute.Name;
             }
             else
             {
-                return propInfo.GetGetMethod().ReturnType.Name;
+                return propInfo.PropertyType.GetGenericArguments().First().Name;
             }
 
         }
