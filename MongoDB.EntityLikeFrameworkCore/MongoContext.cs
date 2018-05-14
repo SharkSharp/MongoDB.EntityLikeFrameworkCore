@@ -11,7 +11,7 @@ namespace MongoDB.EntityLikeFrameworkCore
     public abstract class MongoContext
     {
         private readonly MongoClient client;
-        private readonly IMongoDatabase database;
+        public IMongoDatabase Database { get; }
 
         /// <summary>
         /// 
@@ -20,10 +20,8 @@ namespace MongoDB.EntityLikeFrameworkCore
         public MongoContext(MongoDbContextOptions options)
         {
             client = new MongoClient(options.ConnectionString);
-            database = GetDatabase(options);
+            Database = GetDatabase(options);
         }
-
-        public IMongoDatabase Database { get => database; }
 
         /// <summary>
         /// 
@@ -38,7 +36,7 @@ namespace MongoDB.EntityLikeFrameworkCore
             else
                 name = typeof(T).Name;
 
-            return database.GetCollection<T>(name);
+            return Database.GetCollection<T>(name);
         }
 
         /// <summary>

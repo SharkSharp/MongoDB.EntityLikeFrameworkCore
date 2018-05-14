@@ -2,7 +2,7 @@
 
 namespace MongoDB.EntityLikeFrameworkCore.Extensions
 {
-    public static class ServiceExtension
+    public static class ServiceExtensions
     {
         /// <summary>
         /// 

@@ -11,14 +11,14 @@ namespace MongoDB.EntityLikeFrameworkCore
     /// </summary>
     public abstract class MongoDbBuilder<T> where T : MongoContext
     {
-        private readonly bool handleNewCollections;
+        private readonly bool resetDatabase;
 
         /// <summary>
         /// 
         /// </summary>
-        public MongoDbBuilder(bool handleNewCollections = true)
+        public MongoDbBuilder(bool resetDatabase = false)
         {
-            this.handleNewCollections = handleNewCollections;
+            this.resetDatabase = resetDatabase;
         }
 
         /// <summary>
@@ -53,8 +53,10 @@ namespace MongoDB.EntityLikeFrameworkCore
         /// <param name="context"></param>
         public void Build(T context)
         {
-            if(handleNewCollections)
-                HandleNewCollections(context, GetAbsentCollectionNames(context));
+            if (resetDatabase)
+                context.Database.Client.DropDatabase(context.DatabaseName);
+
+            HandleNewCollections(context, GetAbsentCollectionNames(context));
 
             Index(context);
             Seed(context);
