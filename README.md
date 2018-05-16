@@ -39,7 +39,65 @@ NOTE: We use the IMongoCollection from MongoDB.Driver instead of DbSet<>.
     }
 ```
 
-At the beginning of the application Context will connect to the database, calculate the differences between the database and the code, and create the new collections.
+You now have the choice of creating a MongoDbBuilder, which will index and seed the collections.
+
+```cs
+public class ExampleDbBuilder : MongoDbBuilder<ExampleContext>
+{
+    private IHostingEnvironment hostingEnvironment;
+
+    public CerberusDbBuilder(IHostingEnvironment hostingEnvironment)
+        : base(hostingEnvironment.EnvironmentName == "Test")
+    {
+        this.hostingEnvironment = hostingEnvironment;
+    }
+    
+    protected override void Index<ModelType>(IMongoCollection<ModelType> collection)
+    {
+        switch (collection)
+        {
+            case IMongoCollection<User> users:
+                IndexUsers(users);
+                return;
+        }
+
+        base.Index(collection);
+    }
+    
+    private static void IndexUsers(IMongoCollection<User> users)
+    {
+        users.Indexes.CreateOne(Builders<User>.IndexKeys.Ascending(x => x.Email),
+                                new CreateIndexOptions() { Unique = true });
+    }
+    
+    
+    protected override void Seed<ModelType>(IMongoCollection<ModelType> collection)
+    {
+        switch (collection)
+        {
+            case IMongoCollection<User> users:
+                SeedUsers(users);
+                return;
+        }
+    }
+    
+    private static void SeedUsers(IMongoCollection<User> users)
+    {
+        users.InsertMany(new List<User>
+        {
+            new User()
+            {
+                Name = "Teste",
+                Email = "teste@teste.com",
+                Password = "teste123".Sha256(),
+                BirthDate = DateTime.Now,
+            }
+        });
+    }
+ }
+```
+
+If any MongoDbBuilder were registered, at the beginning of the application, Context will connect to the database, calculate the differences between the database and the code and build the new collections.
 
 Finally, register the context in dependency injection:
 
@@ -47,7 +105,11 @@ Finally, register the context in dependency injection:
  public void ConfigureServices(IServiceCollection services)
         {
             ...
-            services.AddMongoDbContext(new MongoDbContextOptions<ExampleContext>("MONGODBCONNECTIONSTRING"));
+            services.AddMongoDbContext
+            (
+                new MongoDbContextOptions<ExampleContext>("MONGODBCONNECTIONSTRING"),
+                new ExampleDbBuilder(HostingEnvironment);
+            );
             ...
         }
 ```
@@ -57,7 +119,6 @@ Now just put the Context as dependency and use. The context automatically looks 
 
 ## Next desired features:
 
-* Add data annotations for Models to describe indexes.
-* Optimize Context to allocate instances only on demand.
-* Add a utils to help in some queries.
-* Add appropriate support for MongoDB Options.
+- [ ] Add data annotations for Models to describe indexes.
+- [x] Optimize Context to allocate instances only on demand.
+- [ ] Add appropriate support for MongoDB Options.
