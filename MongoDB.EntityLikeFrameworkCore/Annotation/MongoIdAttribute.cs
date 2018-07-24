@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Hermes.Web.Attributes
+namespace MongoDB.EntityLikeFrameworkCore.Annotation
 {
     public class MongoIdAttribute : RegularExpressionAttribute
     {

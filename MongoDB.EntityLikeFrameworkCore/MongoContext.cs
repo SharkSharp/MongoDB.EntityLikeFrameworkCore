@@ -2,6 +2,8 @@
 using MongoDB.EntityLikeFrameworkCore.Annotation;
 using MongoDB.EntityLikeFrameworkCore.Extensions;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MongoDB.EntityLikeFrameworkCore
 {
@@ -21,6 +23,28 @@ namespace MongoDB.EntityLikeFrameworkCore
         {
             client = new MongoClient(options.ConnectionString);
             Database = GetDatabase(options);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public IClientSessionHandle StartSession(ClientSessionOptions options = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return client.StartSession(options, cancellationToken);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<IClientSessionHandle> StartSessionAsync(ClientSessionOptions options = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await client.StartSessionAsync(options, cancellationToken);
         }
 
         /// <summary>
