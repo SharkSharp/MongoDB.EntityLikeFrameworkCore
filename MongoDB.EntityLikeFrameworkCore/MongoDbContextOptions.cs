@@ -13,12 +13,13 @@ namespace MongoDB.EntityLikeFrameworkCore
         /// </summary>
         /// <param name="connectionString"></param>
         /// <param name="settings"></param>
-        public MongoDbContextOptions(string connectionString, MongoDatabaseSettings settings = null)
+        public MongoDbContextOptions(string connectionString, string databaseName = null, MongoDatabaseSettings settings = null)
         {
             ConnectionString = connectionString;
             Settings = settings;
         }
 
+        public string DatabaseName { get; set; }
         public string ConnectionString { get; }
         public MongoDatabaseSettings Settings { get; }
     }

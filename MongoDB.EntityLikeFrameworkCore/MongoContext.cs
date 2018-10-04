@@ -1,6 +1,7 @@
 ﻿using MongoDB.Driver;
 using MongoDB.EntityLikeFrameworkCore.Annotation;
 using MongoDB.EntityLikeFrameworkCore.Extensions;
+using System;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +14,8 @@ namespace MongoDB.EntityLikeFrameworkCore
     public abstract class MongoContext
     {
         private readonly MongoClient client;
+        private readonly MongoDbContextOptions options;
+
         public IMongoDatabase Database { get; }
 
         /// <summary>
@@ -21,6 +24,8 @@ namespace MongoDB.EntityLikeFrameworkCore
         /// <param name="options"></param>
         public MongoContext(MongoDbContextOptions options)
         {
+            this.options = options;
+
             client = new MongoClient(options.ConnectionString);
             Database = GetDatabase(options);
         }
@@ -81,10 +86,19 @@ namespace MongoDB.EntityLikeFrameworkCore
             get
             {
                 var myType = GetType();
+                var contextTypeName = myType.Name.TrimEnd("Context");
+                var envDatabaseName = Environment.GetEnvironmentVariable($"{contextTypeName.ToUpper()}_MONGO_DATABASE_NAME");
+
+                if (!string.IsNullOrEmpty(envDatabaseName))
+                    return envDatabaseName;
+
+                if (!string.IsNullOrEmpty(options.DatabaseName))
+                    return options.DatabaseName;
+
                 if (myType.GetCustomAttribute(typeof(DatabaseAttribute)) is DatabaseAttribute attribute)
                     return attribute.Name;
-                else
-                    return myType.Name.TrimEnd("Context");
+
+                return contextTypeName;
             }
         }
     }
