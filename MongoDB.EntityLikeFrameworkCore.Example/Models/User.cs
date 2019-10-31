@@ -1,9 +1,11 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.EntityLikeFrameworkCore.Annotation;
 using System;
 
 namespace MongoDB.EntityLikeFrameworkCore.Example.Models
 {
+    [Collection("user")]
     public class User
     {
         [BsonId]

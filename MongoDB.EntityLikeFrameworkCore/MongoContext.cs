@@ -87,10 +87,6 @@ namespace MongoDB.EntityLikeFrameworkCore
             {
                 var myType = GetType();
                 var contextTypeName = myType.Name.TrimEnd("Context");
-                var envDatabaseName = Environment.GetEnvironmentVariable($"{contextTypeName.ToUpper()}_MONGO_DATABASE_NAME");
-
-                if (!string.IsNullOrEmpty(envDatabaseName))
-                    return envDatabaseName;
 
                 if (!string.IsNullOrEmpty(options.DatabaseName))
                     return options.DatabaseName;

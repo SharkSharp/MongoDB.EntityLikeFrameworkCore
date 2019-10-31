@@ -9,7 +9,6 @@ namespace MongoDB.EntityLikeFrameworkCore.Example.Models
         public ExampleContext(MongoDbContextOptions<ExampleContext> options)
             : base(options) { }
 
-        [Collection("user")]
         public IMongoCollection<User> Users { get => GetCollection<User>(); }
     }
 }
