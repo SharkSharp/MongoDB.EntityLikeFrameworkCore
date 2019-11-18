@@ -13,9 +13,10 @@ namespace MongoDB.EntityLikeFrameworkCore.Extensions
         /// <param name="service"></param>
         /// <param name="setupAction"></param>
         /// <param name="builder"></param>
-        public static IMongoDbContextBuilder<T> AddMongoDbContext<T>(this IServiceCollection service, Action<MongoDbContextOptions<T>, string> setupAction) where T : MongoContext
+        public static IMongoDbContextBuilder<T> AddMongoDbContext<T>(this IServiceCollection service,
+                                                                     Action<MongoDbContextOptions<T>, string> setupAction) where T : MongoContext
         {
-            MongoDbContextOptions<T> options = default;
+           var options = new MongoDbContextOptions<T>();
             setupAction(options, typeof(T).Name.TrimEnd("Context"));
 
             service.AddSingleton(x => options);
