@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using Microsoft.Extensions.Configuration;
+using MongoDB.Driver;
 using System;
 
 namespace MongoDB.EntityLikeFrameworkCore
@@ -13,13 +14,16 @@ namespace MongoDB.EntityLikeFrameworkCore
         /// </summary>
         /// <param name="connectionString"></param>
         /// <param name="settings"></param>
-        public MongoDbContextOptions(string connectionString, string databaseName = null, MongoDatabaseSettings settings = null)
+        public MongoDbContextOptions(string connectionString,
+                                     string databaseName = null,
+                                     MongoDatabaseSettings settings = null)
         {
             ConnectionString = connectionString;
+            DatabaseName = databaseName;
             Settings = settings;
         }
 
-        public string DatabaseName { get; set; }
+        public string DatabaseName { get; }
         public string ConnectionString { get; }
         public MongoDatabaseSettings Settings { get; }
     }

@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
 using MongoDB.EntityLikeFrameworkCore.Annotation;
 using MongoDB.EntityLikeFrameworkCore.Extensions;
 using System;
@@ -25,7 +26,6 @@ namespace MongoDB.EntityLikeFrameworkCore
         public MongoContext(MongoDbContextOptions options)
         {
             this.options = options;
-
             client = new MongoClient(options.ConnectionString);
             Database = GetDatabase(options);
         }
@@ -36,7 +36,7 @@ namespace MongoDB.EntityLikeFrameworkCore
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public IClientSessionHandle StartSession(ClientSessionOptions options = null, CancellationToken cancellationToken = default(CancellationToken))
+        public IClientSessionHandle StartSession(ClientSessionOptions options = null, CancellationToken cancellationToken = default)
         {
             return client.StartSession(options, cancellationToken);
         }
@@ -47,7 +47,7 @@ namespace MongoDB.EntityLikeFrameworkCore
         /// <param name="options"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<IClientSessionHandle> StartSessionAsync(ClientSessionOptions options = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IClientSessionHandle> StartSessionAsync(ClientSessionOptions options = null, CancellationToken cancellationToken = default)
         {
             return await client.StartSessionAsync(options, cancellationToken);
         }
@@ -86,15 +86,13 @@ namespace MongoDB.EntityLikeFrameworkCore
             get
             {
                 var myType = GetType();
-                var contextTypeName = myType.Name.TrimEnd("Context");
 
                 if (!string.IsNullOrEmpty(options.DatabaseName))
                     return options.DatabaseName;
-
-                if (myType.GetCustomAttribute(typeof(DatabaseAttribute)) is DatabaseAttribute attribute)
+                else if (myType.GetCustomAttribute(typeof(DatabaseAttribute)) is DatabaseAttribute attribute)
                     return attribute.Name;
-
-                return contextTypeName;
+                else
+                    return myType.Name.TrimEnd("Context");
             }
         }
     }
