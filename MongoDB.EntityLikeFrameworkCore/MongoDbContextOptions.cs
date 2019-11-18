@@ -9,22 +9,8 @@ namespace MongoDB.EntityLikeFrameworkCore
     /// </summary>
     public abstract class MongoDbContextOptions
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="connectionString"></param>
-        /// <param name="settings"></param>
-        public MongoDbContextOptions(string connectionString,
-                                     string databaseName = null,
-                                     MongoDatabaseSettings settings = null)
-        {
-            ConnectionString = connectionString;
-            DatabaseName = databaseName;
-            Settings = settings;
-        }
-
-        public string DatabaseName { get; }
-        public string ConnectionString { get; }
-        public MongoDatabaseSettings Settings { get; }
+        public string ConnectionString { get; set; }
+        public string DatabaseName { get; set; }
+        public MongoDatabaseSettings Settings { get; set; }
     }
 }
