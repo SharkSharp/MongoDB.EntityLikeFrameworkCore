@@ -21,7 +21,9 @@ namespace MongoDB.EntityLikeFrameworkCore.Example
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddMongoDbContext(new MongoDbContextOptions<ExampleContext>("mongodb://Development:dev123@localhost:27017"));
+            services.AddMongoDbContext<ExampleContext>((config, ctxName) => {
+                config.ConnectionString = "mongodb://Development:dev123@localhost:27017";
+            });
             services.AddRepositories();
         }
 
