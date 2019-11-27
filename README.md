@@ -105,11 +105,10 @@ Finally, register the context in dependency injection:
  public void ConfigureServices(IServiceCollection services)
         {
             ...
-            services.AddMongoDbContext
-            (
-                new MongoDbContextOptions<ExampleContext>("MONGODBCONNECTIONSTRING"),
-                new ExampleDbBuilder(HostingEnvironment);
-            );
+            services.AddMongoDbContext<ExampleContext>((config, ctxName) => {
+                config.ConnectionString = "MONGODBCONNECTIONSTRING";
+            })
+            .AddMongoDbBuilder(new ExampleDbBuilder(HostingEnvironment));
             ...
         }
 ```
