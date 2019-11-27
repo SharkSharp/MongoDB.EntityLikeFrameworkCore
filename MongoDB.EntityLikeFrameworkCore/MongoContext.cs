@@ -60,10 +60,16 @@ namespace MongoDB.EntityLikeFrameworkCore
         protected IMongoCollection<T> GetCollection<T>()
         {
             string name = "";
-            if (typeof(T).GetCustomAttribute(typeof(CollectionAttribute)) is CollectionAttribute attribute)
-                name = attribute.Name;
+            var type = typeof(T);
+
+            if (type.GetCustomAttribute(typeof(GenericModelAttribute)) is GenericModelAttribute genericModelAttr &&
+                type.IsGenericType && type.GenericTypeArguments.Length == 1)
+                type = type.GenericTypeArguments[0];
+
+            if (type.GetCustomAttribute(typeof(CollectionAttribute)) is CollectionAttribute collectionAttr)
+                name = collectionAttr.Name;
             else
-                name = typeof(T).Name;
+                name = type.Name;
 
             return Database.GetCollection<T>(name);
         }
